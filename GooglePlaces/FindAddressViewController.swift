@@ -12,7 +12,7 @@ import Alamofire
 
 class FindAddressViewController: UIViewController, CLLocationManagerDelegate {
 
-    private final var GooglePlacesKey = "AIzaSyAk3YSywuiJAj7fTaTcSQcYVkp8DctDqMg"
+    private final var GooglePlacesKey = "" // Place your google web services api key
     
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchResultLabel: UILabel!
