@@ -27,20 +27,21 @@ class FindAddressViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func textFieldChanged(_ sender: Any) {
         if searchTextField.text != "" {
-            searchResultView.isHidden = false
-            getPlaces(searchString: searchTextField.text!, locationString: locationString)
+            getPlaces(searchString: searchTextField.text!, locationString: locationString, success: { (responseAddress) in
+                self.searchResultView.isHidden = false
+                self.searchResultLabel.text = responseAddress
+            })
         } else {
             searchResultView.isHidden = true
         }
     }
     
     @IBAction func addButtonClick(_ sender: Any) {
-        let alert = UIAlertController(title: "Congratulations!", message: "Your address\" \(String(describing: self.searchResultLabel.text!)) \" has been found successfully", preferredStyle: UIAlertControllerStyle.alert)
+        self.searchResultView.isHidden = true
+        let alertVC = UIAlertController(title: "Congratulations!", message: "Your address\" \(String(describing: self.searchResultLabel.text!)) \" has been found successfully", preferredStyle: UIAlertControllerStyle.alert)
         let action = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(action)
-        present(alert, animated: true, completion: {
-            self.searchResultView.isHidden = true
-        })
+        alertVC.addAction(action)
+        present(alertVC, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -61,7 +62,7 @@ class FindAddressViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    private func getPlaces(searchString: String, locationString: String) {
+    private func getPlaces(searchString: String, locationString: String, success: @escaping (String) -> ()) {
         var param: [String: Any] = [
             "input": searchString,
             "types": "geocode",
@@ -81,7 +82,7 @@ class FindAddressViewController: UIViewController, CLLocationManagerDelegate {
                     if let predictions = json["predictions"] as? Array<Any> {
                         let obj1 = predictions[0] as? NSDictionary
                         let descr = obj1?["description"] as! String
-                        self.searchResultLabel.text = descr
+                        success(descr)
                     }
                 } else {
                     print("Result not found")
